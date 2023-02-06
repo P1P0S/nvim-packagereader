@@ -57,7 +57,6 @@ local show_scripts = function(opts)
           local first_word = string.match(selected.value, "%S+")
           local filtered_word = string.gsub(first_word, ":$", "")
           local command = M.opts.cmd.manager .. " run " .. filtered_word
-          print(command)
           actions.close(prompt_bufnr)
           vim.api.nvim_command("tabnew | terminal " .. command)
           vim.notify(
