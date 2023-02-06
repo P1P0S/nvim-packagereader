@@ -78,7 +78,7 @@ end
 
 function M.setup(opts)
   M.opts = vim.tbl_deep_extend("force", M.opts, opts)
-  vim.api.nvim_create_use_command("PackageReader", init, {})
+  vim.api.nvim_create_user_command("PackageReader", init, {})
 end
 
 function M.init()
