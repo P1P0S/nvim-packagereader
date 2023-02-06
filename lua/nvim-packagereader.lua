@@ -7,9 +7,7 @@ local actions_state = require("telescope.actions.state")
 
 local M = {
   opts = {
-    cmd = {
       manager = "npm",
-    },
   },
 }
 
@@ -56,7 +54,7 @@ local show_scripts = function(opts)
           local selected = actions_state.get_selected_entry(prompt_bufnr)
           local first_word = string.match(selected.value, "%S+")
           local filtered_word = string.gsub(first_word, ":$", "")
-          local command = M.opts.cmd.manager .. " run " .. filtered_word
+          local command = M.opts.manager .. " run " .. filtered_word
           actions.close(prompt_bufnr)
           vim.api.nvim_command("tabnew | terminal " .. command)
           vim.notify(
