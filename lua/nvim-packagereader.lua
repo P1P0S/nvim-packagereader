@@ -7,7 +7,7 @@ local actions_state = require("telescope.actions.state")
 
 local M = {
   opts = {
-      manager = "npm",
+    manager = "npm",
   },
 }
 
@@ -74,6 +74,7 @@ local show_scripts = function(opts)
 end
 
 function M.setup(opts)
+  opts = opts or {}
   M.opts = vim.tbl_deep_extend("force", M.opts, opts)
   vim.api.nvim_create_user_command("PackageReader", M.init, {})
 end
