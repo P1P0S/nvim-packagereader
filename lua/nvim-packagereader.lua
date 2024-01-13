@@ -8,12 +8,17 @@ local actions_state = require("telescope.actions.state")
 local M = {
   opts = {
     manager = "npm",
+    telescope_mode = "insert",
+    terminal_mode = "tab",
   },
 }
 
 local show_scripts = function(opts)
   opts = opts or {}
-  local filePath = vim.fn.getcwd() .. "\\package.json"
+  local filePath = vim.fn.getcwd() .. "/package.json"
+  if vim.fn.has("win32") == 1 then
+    filePath = vim.fn.substitute(filePath, "/", "\\", "g")
+  end
   local file = io.open(filePath, "rb")
 
   if not file then
@@ -48,7 +53,7 @@ local show_scripts = function(opts)
         results = script_list,
       }),
       sorter = sorters.get_generic_fuzzy_sorter(),
-      initial_mode = "normal",
+      initial_mode = M.opts.telescope_mode,
       attach_mappings = function(prompt_bufnr, map)
         local execute_script = function()
           local selected = actions_state.get_selected_entry(prompt_bufnr)
@@ -56,12 +61,21 @@ local show_scripts = function(opts)
           local filtered_word = string.gsub(first_word, ":$", "")
           local command = M.opts.manager .. " run " .. filtered_word
           actions.close(prompt_bufnr)
-          vim.api.nvim_command("tabnew | terminal " .. command)
-          vim.notify(
-            string.format('Command "%s" running in a new tab', command),
-            vim.log.levels.INFO,
-            { title = "PackageReader" }
-          )
+          if M.opts.terminal_mode == "buffer" then
+            vim.api.nvim_command("enew | terminal " .. command)
+            vim.notify(
+              string.format('Command "%s" running in a new buffer', command),
+              vim.log.levels.INFO,
+              { title = "PackageReader" }
+            )
+          else
+            vim.api.nvim_command("tabnew | terminal " .. command)
+            vim.notify(
+              string.format('Command "%s" running in a new tab', command),
+              vim.log.levels.INFO,
+              { title = "PackageReader" }
+            )
+          end
         end
 
         map("i", "<CR>", execute_script)
